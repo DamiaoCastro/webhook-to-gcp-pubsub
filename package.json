@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "place payload received in webwook in google pubsub topic",
   "scripts": {
-    "start": "tsc && node ./dist/src/server.js",
+    "build": "tsc",
     "watch": "concurrently \"tsc -w\" \"nodemon --watch ./build/ --exec npm run start\"",
     "test": "mocha -r ts-node/register ./test/*.ts"
   },

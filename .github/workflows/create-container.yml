@@ -1,0 +1,20 @@
+# https://github.com/google-github-actions/setup-gcloud/blob/master/example-workflows/cloud-run/cloud-run.yml
+# https://cloud.google.com/sdk/gcloud/reference/run/deploy
+on:
+  push:
+    branches:
+    - main
+    
+name: Build Container
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build Dockerfile
+      run: |-
+        docker build -t ghcr.io/DamiaoCastro/webhook-to-pubsub:latest .
+        docker push ghcr.io/DamiaoCastro/webhook-to-pubsub:latest
