@@ -41,11 +41,6 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-    # - name: Build and Push Dockerfile to Github Packages
-    #   run: |-
-    #     docker build -t ghcr.io/damiaocastro/webhook-to-pubsub:latest .
-    #     docker push ghcr.io/damiaocastro/webhook-to-pubsub:latest
-
     - name: Build and push Docker image
       uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
       with:
