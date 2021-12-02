@@ -5,7 +5,7 @@ FROM ubuntu:latest
 
 WORKDIR /usr/app
 
-#RUN apt install openssl
+RUN apt install libssl-dev
 RUN openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -keyout localhost-privkey.pem -out localhost-cert.pem
 
 # Copy package.json and install node modules
