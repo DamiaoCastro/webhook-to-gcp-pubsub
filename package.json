@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/DamiaoCastro/ts-webhook-to-pubsub#readme",
   "dependencies": {
-    "express": "^4.17.1",
     "@google-cloud/pubsub": "^2.18.3",
+    "express": "^4.17.1",
     "grpc": "^1.24.11"
   },
   "devDependencies": {
