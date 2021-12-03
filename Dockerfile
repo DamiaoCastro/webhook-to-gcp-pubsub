@@ -5,8 +5,8 @@ FROM ubuntu:latest
 
 WORKDIR /usr/app
 
-RUN apt update
-RUN apt install build-essential checkinstall zlib1g-dev -y
+RUN apt update -y
+RUN apt-get install -y openssl
 RUN openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -keyout localhost-privkey.pem -out localhost-cert.pem
 
 # Copy package.json and install node modules
