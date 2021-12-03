@@ -8,7 +8,7 @@ WORKDIR /usr/app
 RUN apt update -y
 RUN apt install -y openssl
 RUN openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -keyout localhost-privkey.pem -out localhost-cert.pem
-RUN apt install nodejs
+RUN apt install -y nodejs
 
 # Copy package.json and install node modules
 COPY . .
