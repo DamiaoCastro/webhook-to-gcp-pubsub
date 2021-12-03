@@ -1,7 +1,6 @@
 # Use a node 16 base image
 ARG NODE_VERSION=16
-FROM node:${NODE_VERSION}-alpine as build
-FROM ubuntu:latest
+FROM node:${NODE_VERSION}-bullseye as build
 
 WORKDIR /usr/app
 
