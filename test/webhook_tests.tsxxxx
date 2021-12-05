@@ -1,7 +1,8 @@
 import { describe } from "mocha";
 import { Webhook } from "../src/webhook";
-import { mockRequest, mockResponse } from "mock-req-res";
+// import { mockRequest, mockResponse } from "mock-req-res";
 import { strict as assert } from 'assert';
+import { IncomingMessage, ServerResponse } from "node:http";
 
 describe('test default response when NOT defined in the environment variables', function () {
 
@@ -12,11 +13,11 @@ describe('test default response when NOT defined in the environment variables', 
 
     const webhook = new Webhook(environmentVariables);
 
-    const request = mockRequest({ body: "{ some dummy body }" })
-    const response = mockResponse();
+    const request : IncomingMessage = mockRequest({ body: "{ some dummy body }" })
+    const response : ServerResponse = mockResponse();
 
     //act
-    webhook.handler(request, response);
+    webhook.handlerHttp1(request, response);
 
     //assert
     it('statusCode', function () {

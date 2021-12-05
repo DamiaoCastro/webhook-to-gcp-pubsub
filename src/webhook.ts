@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { IncomingMessage, RequestListener, ServerResponse } from 'node:http';
 
 interface Dict<T> {
     readonly [key: string]: T | undefined;
@@ -24,8 +24,9 @@ export class Webhook {
 
     }
 
-    public handler = (request: Request, response: Response) => {
-        response.status(200).send(this.defaultResponse);
+    public handlerHttp1: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
+        response.writeHead(200, { 'Content-Type': 'text/plain' });
+        response.end('OK');
     }
 
 }
