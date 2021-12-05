@@ -1,7 +1,7 @@
 import { PubSub, TestIamPermissionsResponse } from "@google-cloud/pubsub";
 const grpc = require('grpc');
 
-export class PubSubPublisher {
+export class PubSubPublisher implements IPubsubPublisher {
 
     private static readonly ProjectIdEnvironmentKey: string = 'PROJECT_ID';
     private static readonly TopicIdEnvironmentKey: string = 'TOPIC_ID';
@@ -27,7 +27,7 @@ export class PubSubPublisher {
         return new PubSubPublisher(projectId, topicId);
     };
 
-    public publishMessageAsync = async (contentType: string, data: Buffer) => {
+    public publishMessageAsync = async (contentType: string, data: Buffer): Promise<void> => {
 
         const attributes = {
             "content-type": contentType
@@ -42,7 +42,7 @@ export class PubSubPublisher {
 
     }
 
-    public async checkPublishPermissionsAsync() {
+    public async checkPublishPermissionsAsync(): Promise<void> {
 
         const permissionsToTest = [
             // 'pubsub.topics.attachSubscription',

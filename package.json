@@ -4,8 +4,9 @@
   "description": "place payload received in webwook in google pubsub topic",
   "scripts": {
     "build": "tsc",
+    "start": "tsc && node ./dist/src/server_http1.js",
     "watch": "concurrently \"tsc -w\" \"nodemon --watch ./build/ --exec npm run start\"",
-    "test": "mocha -r ts-node/register ./test/*.ts"
+    "test": "tsc && mocha ./dist/test/*.js"
   },
   "repository": {
     "type": "git",

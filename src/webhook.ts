@@ -1,13 +1,12 @@
 import { IncomingMessage, RequestListener, ServerResponse } from 'node:http';
-import { PubSubPublisher } from './pubsubPublisher';
 import { Duplex } from 'node:stream';
 
 export class Webhook {
 
     private defaultResponse: string = "OK";
-    private readonly publisher: PubSubPublisher;
+    private readonly publisher: IPubsubPublisher;
 
-    constructor(environmentVariables: Dict<string>, publisher: PubSubPublisher) {
+    constructor(environmentVariables: Dict<string>, publisher: IPubsubPublisher) {
         this.analyseEnvironmentVariables(environmentVariables);
         this.publisher = publisher;
     }
@@ -28,14 +27,15 @@ export class Webhook {
 
         const contentType = request.headers['content-type'];
 
-
         request.on('data', (data : Buffer) => { 
             return this.publisher.publishMessageAsync(contentType, data);
         });
 
-        // request.pipe();
-        
-        response.writeHead(200, { 'Content-Type': 'text/plain' }).end(this.defaultResponse);
+        request.on('end', () => { 
+            response.writeHead(200, { 'Content-Type': 'text/plain' });
+            response.end(this.defaultResponse);
+        });
+
     }
 
     public errorHandler = (err: Error, socket: Duplex) => {
