@@ -1,5 +1,6 @@
 import { IncomingMessage, RequestListener, ServerResponse } from 'node:http';
 import { PubSubPublisher } from './pubsubPublisher';
+import { Duplex } from 'node:stream';
 
 export class Webhook {
 
@@ -25,11 +26,21 @@ export class Webhook {
 
     public handlerHttp1: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
 
-        // var body = request.read();
-        console.log("body:");
-        // console.log(body);
+        const contentType = request.headers['content-type'];
 
+
+        request.on('data', (data : Buffer) => { 
+            return this.publisher.publishMessageAsync(contentType, data);
+        });
+
+        // request.pipe();
+        
         response.writeHead(200, { 'Content-Type': 'text/plain' }).end(this.defaultResponse);
     }
+
+    public errorHandler = (err: Error, socket: Duplex) => {
+        console.error(err);
+        socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+    };
 
 }

@@ -1,4 +1,4 @@
-import { PubSub } from "@google-cloud/pubsub";
+import { PubSub, TestIamPermissionsResponse } from "@google-cloud/pubsub";
 const grpc = require('grpc');
 
 export class PubSubPublisher {
@@ -27,12 +27,38 @@ export class PubSubPublisher {
         return new PubSubPublisher(projectId, topicId);
     };
 
-    public publishMessageAsync = async (message: string) => {
+    public publishMessageAsync = async (contentType: string, data: Buffer) => {
 
-        const data: Buffer = Buffer.from(message);
-        const messageId = await this.pubSubClient.topic(this.topicName).publishMessage({ data });
+        const attributes = {
+            "content-type": contentType
+        };
+
+        // const data: Buffer = Buffer.from(message);
+        const messageId = await this.pubSubClient
+            .topic(this.topicName)
+            .publishMessage({ attributes, data });
+
         console.log(`Message ${messageId} published.`);
 
-    };
+    }
+
+    public async checkPublishPermissionsAsync() {
+
+        const permissionsToTest = [
+            // 'pubsub.topics.attachSubscription',
+            'pubsub.topics.publish',
+            // 'pubsub.topics.update',
+        ];
+
+        const permissionsReponse: TestIamPermissionsResponse = await this.pubSubClient
+            .topic(this.topicName)
+            .iam.testPermissions(permissionsToTest);
+
+        if (permissionsReponse[0]) {
+            console.info('publish permissions verified');
+        } else {
+            throw new Error('service account has no publish permissions');
+        }
+    }
 
 }
