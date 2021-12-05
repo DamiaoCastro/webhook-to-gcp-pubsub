@@ -18,7 +18,7 @@ FROM node:${NODE_VERSION}-alpine
 
 WORKDIR /usr/app
 
-COPY --from=build /usr/app/dist/src /usr/app
+COPY --from=build /usr/app/dist/src/ /usr/app/
 # RUN npm install @google-cloud/pubsub
 # RUN npm install grpc
 
