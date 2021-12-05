@@ -14,15 +14,11 @@ RUN npm install
 # RUN npm test
 RUN npm run-script build
 
-RUN ls /usr/app/
-RUN ls /usr/app/dist/
-RUN ls /usr/app/dist/src/
-
 FROM node:${NODE_VERSION}-alpine
 
 WORKDIR /usr/app
 
-COPY --from=build /usr/app/dist/src/* /usr/app/
+COPY --from=build /usr/app/dist/ /usr/app/
 # RUN npm install @google-cloud/pubsub
 # RUN npm install grpc
 
