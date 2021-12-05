@@ -1,15 +1,14 @@
 import { IncomingMessage, RequestListener, ServerResponse } from 'node:http';
-
-interface Dict<T> {
-    readonly [key: string]: T | undefined;
-}
+import { PubSubPublisher } from './pubsubPublisher';
 
 export class Webhook {
 
     private defaultResponse: string = "OK";
+    private readonly publisher: PubSubPublisher;
 
-    constructor(environmentVariables: Dict<string>) {
+    constructor(environmentVariables: Dict<string>, publisher: PubSubPublisher) {
         this.analyseEnvironmentVariables(environmentVariables);
+        this.publisher = publisher;
     }
 
     /**
@@ -25,8 +24,12 @@ export class Webhook {
     }
 
     public handlerHttp1: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
-        response.writeHead(200, { 'Content-Type': 'text/plain' });
-        response.end('OK');
+
+        // var body = request.read();
+        console.log("body:");
+        // console.log(body);
+
+        response.writeHead(200, { 'Content-Type': 'text/plain' }).end(this.defaultResponse);
     }
 
 }

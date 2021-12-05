@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
             "name": "Launch Program",
             "skipFiles": [
@@ -13,10 +13,12 @@
             ],
             "program": "${workspaceFolder}\\src\\index.ts",
             "outFiles": [
-                "${workspaceFolder}/**/*.js"
+                "${workspaceFolder}/dist/**/*.js"
             ],
             "env": {
-                "GOOGLE_APPLICATION_CREDENTIALS":"credentials.json"
+                "GOOGLE_APPLICATION_CREDENTIALS":"credentials.json",
+                "PROJECT_ID":"damiao-project-1",
+                "TOPIC_ID":"test"
             }
         }
     ]

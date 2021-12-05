@@ -1,3 +1,4 @@
+import { PubSubPublisher } from './pubsubPublisher';
 import { Server } from 'node:http';
 import { Duplex } from 'node:stream';
 import { Webhook } from './webhook';
@@ -6,7 +7,8 @@ function startHttp1Server() {
 
   const http = require('http');
 
-  const webhook = new Webhook(process.env);
+  const publisher = PubSubPublisher.new(process.env);
+  const webhook = new Webhook(process.env, publisher);
 
   const server: Server = http.createServer(webhook.handlerHttp1);
 
