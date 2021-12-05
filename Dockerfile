@@ -14,6 +14,10 @@ RUN npm install
 # RUN npm test
 RUN npm run-script build
 
+RUN ls /usr/app/
+RUN ls /usr/app/dist/
+RUN ls /usr/app/dist/src/
+
 FROM node:${NODE_VERSION}-alpine
 
 WORKDIR /usr/app
