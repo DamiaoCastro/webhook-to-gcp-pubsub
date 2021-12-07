@@ -25,6 +25,7 @@ export class Webhook {
 
     public requestHandler: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
 
+        console.info(`x-forwarded-for: ${request.headers['x-forwarded-for']}`);
         console.info(`request.socket.remoteAddress: ${request.socket.remoteAddress}`);
 
         const contentType = request.headers['content-type'];
