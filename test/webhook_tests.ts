@@ -21,6 +21,7 @@ describe('test default response when NOT defined in the environment variables', 
         "content-type": "application/json"
     };
     const response = sinon.stubInterface<ServerResponse>();
+    response.writeHead.returns(response);
 
     const webhook = new Webhook(environmentVariables, publisher);
 
@@ -58,6 +59,7 @@ describe('test default response when defined in the environment variables', func
         "content-type": "application/json"
     };
     const response = sinon.stubInterface<ServerResponse>();
+    response.writeHead.returns(response);
 
     const webhook = new Webhook(environmentVariables, publisher);
 
