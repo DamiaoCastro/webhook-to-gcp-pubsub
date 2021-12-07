@@ -1,6 +1,7 @@
 import { PubSubPublisher } from './pubsubPublisher';
 import { Server } from 'node:http';
 import { Webhook } from './webhook';
+import { Firewall } from './firewall';
 
 async function startHttp1Server() {
 
@@ -9,10 +10,11 @@ async function startHttp1Server() {
   const publisher = PubSubPublisher.new(process.env);
   await publisher.checkPublishPermissionsAsync();
 
+  // const firewall = new Firewall(process.env);
   const webhook = new Webhook(process.env, publisher);
 
   const server: Server = http.createServer();
-  server.on('request', webhook.handlerHttp1);
+  server.on('request', webhook.requestHandler);
   server.on('clientError', webhook.errorHandler);
 
   const port = process.env.PORT || 8080;

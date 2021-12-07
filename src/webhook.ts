@@ -23,7 +23,9 @@ export class Webhook {
 
     }
 
-    public handlerHttp1: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
+    public requestHandler: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
+
+        console.info(`request.socket.remoteAddress: ${request.socket.remoteAddress}`);
 
         const contentType = request.headers['content-type'];
 
@@ -32,8 +34,7 @@ export class Webhook {
         });
 
         request.on('end', () => { 
-            response.writeHead(200, { 'Content-Type': 'text/plain' });
-            response.end(this.defaultResponse);
+            response.writeHead(200, { 'Content-Type': 'text/plain' }).end(this.defaultResponse);
         });
 
     }
