@@ -17,6 +17,7 @@ export class Firewall {
     public requestHandler: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
 
         const requestorIp = this.getRequestorIp(request);
+        console.info(`requestorIp: ${requestorIp}`);
 
         response.writeHead(404, { 'Content-Type': 'text/plain' }).end('not found');
 
@@ -35,11 +36,14 @@ export class Firewall {
         }
 
         console.info(`request.socket.remoteAddress: ${request.socket.remoteAddress}`);
+        //example  ::ffff:169.254.8.129
+        const remoteAddress = request.socket.remoteAddress?.replace(RegExp('$::ffff:'), '');
 
+        if (remoteAddress && remoteAddress.length > 0) {
+            return remoteAddress;
+        }
 
-        console.info(request.socket.remoteAddress);
-
-        throw new Error('Function not implemented.');
+        throw new Error('request ip not determined');
     }
 
 }
