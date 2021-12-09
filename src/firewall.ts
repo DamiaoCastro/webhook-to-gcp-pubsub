@@ -2,7 +2,7 @@ import { IncomingMessage, RequestListener, ServerResponse } from 'node:http';
 
 export class Firewall {
 
-    private ipWhitelist: string = "";
+    private ipWhitelist: string[] = [];
 
     /**
      *
@@ -10,16 +10,30 @@ export class Firewall {
     constructor(environmentVariables: Dict<string>) {
 
         const ipWhitelist = environmentVariables["IP_WHITELIST"];
-        if (ipWhitelist && ipWhitelist.length > 0) { this.ipWhitelist = ipWhitelist; }
+        if (ipWhitelist && ipWhitelist.trim().length > 0) {
+            this.ipWhitelist =
+                ipWhitelist
+                    .split(';')
+                    .filter(c => c != '*')
+                    .map(c => c.trim());
+        } else {
+            this.ipWhitelist = [];
+        }
 
     }
 
     public requestHandler: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
 
-        const requestorIp = this.getRequestorIp(request);
-        console.info(`requestorIp: ${requestorIp}`);
+        if (this.ipWhitelist.length == 0) { return; }
 
-        response.writeHead(404, { 'Content-Type': 'text/plain' }).end('not found');
+        const requestorIp = this.getRequestorIp(request);
+
+        if (!this.ipWhitelist.some(c => c == requestorIp)) {
+
+            console.warn(`requestorIp request was blocked: ${requestorIp}`);
+
+            response.writeHead(404, { 'Content-Type': 'text/plain' }).end('not found');
+        }
 
     }
 
