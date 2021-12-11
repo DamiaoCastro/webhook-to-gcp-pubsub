@@ -18,22 +18,15 @@ describe('proxy', function () {
             "x-forwarded-for": "totally-diferent-ip",
             "content-type": "application/json"
         };
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
 
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 1);
-            assert.equal(response.writeHead.getCall(0).firstArg, 404);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 1);
-            assert.equal(response.end.getCall(0).firstArg, 'not found');
+        //assert
+        it('response', function () {
+            assert.equal(response, false);
         });
 
     });
@@ -51,22 +44,15 @@ describe('proxy', function () {
             "x-forwarded-for": "totally-diferent-ip",
             "content-type": "application/json"
         };
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
-
+        
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 1);
-            assert.equal(response.writeHead.getCall(0).firstArg, 404);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 1);
-            assert.equal(response.end.getCall(0).firstArg, 'not found');
+        //assert
+        it('response', function () {
+            assert.equal(response, false);
         });
 
     });
@@ -84,20 +70,15 @@ describe('proxy', function () {
             "x-forwarded-for": "whatever-ip",
             "content-type": "application/json"
         };
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
-
+        
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 0);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 0);
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
         });
 
     });
@@ -115,20 +96,15 @@ describe('proxy', function () {
             "x-forwarded-for": "whatever-ip1",
             "content-type": "application/json"
         };
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
-
+        
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 0);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 0);
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
         });
 
     });
@@ -146,20 +122,15 @@ describe('proxy', function () {
             "x-forwarded-for": "whatever-ip",
             "content-type": "application/json"
         };
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
-
+        
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 0);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 0);
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
         });
 
     });
@@ -177,20 +148,15 @@ describe('proxy', function () {
             "x-forwarded-for": "whatever-ip",
             "content-type": "application/json"
         };
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
-
+        
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 0);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 0);
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
         });
 
     });
@@ -207,26 +173,20 @@ describe('proxy', function () {
             "x-forwarded-for": "whatever-ip",
             "content-type": "application/json"
         };
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
-
+        
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 0);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 0);
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
         });
 
     });
 
 });
-
 
 describe('direct', function () {
 
@@ -242,213 +202,195 @@ describe('direct', function () {
         request.headers = {
             "content-type": "application/json"
         };
-        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:169.254.8.129'); } });
-
-        const response = sinon.stubInterface<ServerResponse>();
-        response.writeHead.returns(response);
+        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:totally-diferent-ip'); } });
 
         const firewall = new Firewall(environmentVariables);
 
         //act
-        firewall.requestHandler(request, response);
+        const response = firewall.isRequestAllowed(request);
 
-        it('statusCode', function () {
-            assert.equal(response.writeHead.callCount, 1);
-            assert.equal(response.writeHead.getCall(0).firstArg, 404);
-        });
-
-        it('response body', function () {
-            assert.equal(response.end.callCount, 1);
-            assert.equal(response.end.getCall(0).firstArg, 'not found');
+        //assert
+        it('response', function () {
+            assert.equal(response, false);
         });
 
     });
 
-    // describe('request blocked because requestor IP is different than the many whitelisted', function () {
+    describe('request blocked because requestor IP is different than the many whitelisted', function () {
 
-    //     //arrange
-    //     const environmentVariables: Dict<string> = {
-    //         "test": "123",
-    //         "IP_WHITELIST": "whatever-ip1;whatever-ip2;whatever-ip3"
-    //     };
+        //arrange
+        const environmentVariables: Dict<string> = {
+            "test": "123",
+            "IP_WHITELIST": "whatever-ip1;whatever-ip2;whatever-ip3"
+        };
 
-    //     const request = sinon.stubInterface<IncomingMessage>();
-    //     request.headers = {
-    //         "x-forwarded-for": "totally-diferent-ip",
-    //         "content-type": "application/json"
-    //     };
-    //     const response = sinon.stubInterface<ServerResponse>();
-    //     response.writeHead.returns(response);
+        const request = sinon.stubInterface<IncomingMessage>();
+        request.headers = {
+            "content-type": "application/json"
+        };
+        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:totally-diferent-ip'); } });
+        
+        const firewall = new Firewall(environmentVariables);
 
-    //     const firewall = new Firewall(environmentVariables);
+        //act
+        const response = firewall.isRequestAllowed(request);
 
-    //     //act
-    //     firewall.requestHandler(request, response);
+        //assert
+        it('response', function () {
+            assert.equal(response, false);
+        });
 
-    //     it('statusCode', function () {
-    //         assert.equal(response.writeHead.callCount, 1);
-    //         assert.equal(response.writeHead.getCall(0).firstArg, 404);
-    //     });
+    });
 
-    //     it('response body', function () {
-    //         assert.equal(response.end.callCount, 1);
-    //         assert.equal(response.end.getCall(0).firstArg, 'not found');
-    //     });
+    describe('request accepted by match in whitelist', function () {
 
-    // });
+        //arrange
+        const environmentVariables: Dict<string> = {
+            "test": "123",
+            "IP_WHITELIST": "whatever-ip"
+        };
 
-    // describe('request accepted by match in whitelist', function () {
+        const request = sinon.stubInterface<IncomingMessage>();
+        request.headers = {
+            "content-type": "application/json"
+        };
+        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:whatever-ip'); } });
+        
+        const firewall = new Firewall(environmentVariables);
 
-    //     //arrange
-    //     const environmentVariables: Dict<string> = {
-    //         "test": "123",
-    //         "IP_WHITELIST": "whatever-ip"
-    //     };
+        //act
+        const response = firewall.isRequestAllowed(request);
 
-    //     const request = sinon.stubInterface<IncomingMessage>();
-    //     request.headers = {
-    //         "x-forwarded-for": "whatever-ip",
-    //         "content-type": "application/json"
-    //     };
-    //     const response = sinon.stubInterface<ServerResponse>();
-    //     response.writeHead.returns(response);
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
+        });
 
-    //     const firewall = new Firewall(environmentVariables);
+    });
 
-    //     //act
-    //     firewall.requestHandler(request, response);
+    describe('request accepted by match in whitelist with multiple IP\'s specified', function () {
 
-    //     it('statusCode', function () {
-    //         assert.equal(response.writeHead.callCount, 0);
-    //     });
+        //arrange
+        const environmentVariables: Dict<string> = {
+            "test": "123",
+            "IP_WHITELIST": "whatever-ip1;whatever-ip2"
+        };
 
-    //     it('response body', function () {
-    //         assert.equal(response.end.callCount, 0);
-    //     });
+        const request = sinon.stubInterface<IncomingMessage>();
+        request.headers = {
+            "content-type": "application/json"
+        };
+        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:whatever-ip1'); } });
 
-    // });
+        const firewall = new Firewall(environmentVariables);
 
-    // describe('request accepted by match in whitelist with multiple IP\'s specified', function () {
+        //act
+        const response = firewall.isRequestAllowed(request);
 
-    //     //arrange
-    //     const environmentVariables: Dict<string> = {
-    //         "test": "123",
-    //         "IP_WHITELIST": "whatever-ip1;whatever-ip2"
-    //     };
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
+        });
 
-    //     const request = sinon.stubInterface<IncomingMessage>();
-    //     request.headers = {
-    //         "x-forwarded-for": "whatever-ip1",
-    //         "content-type": "application/json"
-    //     };
-    //     const response = sinon.stubInterface<ServerResponse>();
-    //     response.writeHead.returns(response);
+    });
 
-    //     const firewall = new Firewall(environmentVariables);
+    describe('request accepted because whitelist is *', function () {
 
-    //     //act
-    //     firewall.requestHandler(request, response);
+        //arrange
+        const environmentVariables: Dict<string> = {
+            "test": "123",
+            "IP_WHITELIST": "*"
+        };
 
-    //     it('statusCode', function () {
-    //         assert.equal(response.writeHead.callCount, 0);
-    //     });
+        const request = sinon.stubInterface<IncomingMessage>();
+        request.headers = {
+            "content-type": "application/json"
+        };
+        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:whatever-ip'); } });
+        
+        const firewall = new Firewall(environmentVariables);
 
-    //     it('response body', function () {
-    //         assert.equal(response.end.callCount, 0);
-    //     });
+        //act
+        const response = firewall.isRequestAllowed(request);
 
-    // });
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
+        });
 
-    // describe('request accepted because whitelist is *', function () {
+    });
 
-    //     //arrange
-    //     const environmentVariables: Dict<string> = {
-    //         "test": "123",
-    //         "IP_WHITELIST": "*"
-    //     };
+    describe('request accepted because whitelist is <empty>', function () {
 
-    //     const request = sinon.stubInterface<IncomingMessage>();
-    //     request.headers = {
-    //         "x-forwarded-for": "whatever-ip",
-    //         "content-type": "application/json"
-    //     };
-    //     const response = sinon.stubInterface<ServerResponse>();
-    //     response.writeHead.returns(response);
+        //arrange
+        const environmentVariables: Dict<string> = {
+            "test": "123",
+            "IP_WHITELIST": ""
+        };
 
-    //     const firewall = new Firewall(environmentVariables);
+        const request = sinon.stubInterface<IncomingMessage>();
+        request.headers = {
+            "content-type": "application/json"
+        };
+        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:whatever-ip'); } });
+        
+        const firewall = new Firewall(environmentVariables);
 
-    //     //act
-    //     firewall.requestHandler(request, response);
+        //act
+        const response = firewall.isRequestAllowed(request);
 
-    //     it('statusCode', function () {
-    //         assert.equal(response.writeHead.callCount, 0);
-    //     });
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
+        });
 
-    //     it('response body', function () {
-    //         assert.equal(response.end.callCount, 0);
-    //     });
+    });
 
-    // });
+    describe('request accepted because whitelist is not specified', function () {
 
-    // describe('request accepted because whitelist is <empty>', function () {
+        //arrange
+        const environmentVariables: Dict<string> = {
+            "test": "123"
+        };
 
-    //     //arrange
-    //     const environmentVariables: Dict<string> = {
-    //         "test": "123",
-    //         "IP_WHITELIST": ""
-    //     };
+        const request = sinon.stubInterface<IncomingMessage>();
+        request.headers = {
+            "content-type": "application/json"
+        };
+        Object.defineProperty(request.socket, 'remoteAddress', { get: () => { return ('::ffff:whatever-ip'); } });
+        
+        const firewall = new Firewall(environmentVariables);
 
-    //     const request = sinon.stubInterface<IncomingMessage>();
-    //     request.headers = {
-    //         "x-forwarded-for": "whatever-ip",
-    //         "content-type": "application/json"
-    //     };
-    //     const response = sinon.stubInterface<ServerResponse>();
-    //     response.writeHead.returns(response);
+        //act
+        const response = firewall.isRequestAllowed(request);
 
-    //     const firewall = new Firewall(environmentVariables);
+        //assert
+        it('response', function () {
+            assert.equal(response, true);
+        });
 
-    //     //act
-    //     firewall.requestHandler(request, response);
+    });
 
-    //     it('statusCode', function () {
-    //         assert.equal(response.writeHead.callCount, 0);
-    //     });
+});
 
-    //     it('response body', function () {
-    //         assert.equal(response.end.callCount, 0);
-    //     });
+describe('exception when IP is not in the "x-forwarded-for" header nor in socket remoteAddress', function () {
 
-    // });
+    //arrange
+    const environmentVariables: Dict<string> = {
+        "test": "123",
+        "IP_WHITELIST": "whatever-ip"
+    };
 
-    // describe('request accepted because whitelist is not specified', function () {
+    const request = sinon.stubInterface<IncomingMessage>();
+    request.headers = {
+        "content-type": "application/json"
+    };
+    const response = sinon.stubInterface<ServerResponse>();
+    response.writeHead.returns(response);
 
-    //     //arrange
-    //     const environmentVariables: Dict<string> = {
-    //         "test": "123"
-    //     };
+    const firewall = new Firewall(environmentVariables);
 
-    //     const request = sinon.stubInterface<IncomingMessage>();
-    //     request.headers = {
-    //         "x-forwarded-for": "whatever-ip",
-    //         "content-type": "application/json"
-    //     };
-    //     const response = sinon.stubInterface<ServerResponse>();
-    //     response.writeHead.returns(response);
-
-    //     const firewall = new Firewall(environmentVariables);
-
-    //     //act
-    //     firewall.requestHandler(request, response);
-
-    //     it('statusCode', function () {
-    //         assert.equal(response.writeHead.callCount, 0);
-    //     });
-
-    //     it('response body', function () {
-    //         assert.equal(response.end.callCount, 0);
-    //     });
-
-    // });
+    //act / assert
+    assert.throws(() => { firewall.isRequestAllowed(request); });
 
 });

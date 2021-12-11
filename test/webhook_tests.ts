@@ -2,10 +2,8 @@ import { describe } from "mocha";
 import { Webhook } from "../src/webhook";
 import { strict as assert } from 'assert';
 import { IncomingMessage, ServerResponse } from "node:http";
-// import { sinon } from 'sinon';
-const http = require('http');
-// const sinon = require('sinon');
 import * as sinon from "ts-sinon";
+import { IFirewall } from "../src/types/IFirewall";
 
 const publisher: IPubsubPublisher = sinon.stubInterface<IPubsubPublisher>();
 
@@ -23,7 +21,10 @@ describe('test default response when NOT defined in the environment variables', 
     const response = sinon.stubInterface<ServerResponse>();
     response.writeHead.returns(response);
 
-    const webhook = new Webhook(environmentVariables, publisher);
+    const firewall: IFirewall = sinon.stubInterface<IFirewall>();
+    firewall.isRequestAllowed = () => { return true; };
+
+    const webhook = new Webhook(environmentVariables, firewall, publisher);
 
     //act
     webhook.requestHandler(request, response);
@@ -43,7 +44,6 @@ describe('test default response when NOT defined in the environment variables', 
 
 });
 
-
 describe('test default response when defined in the environment variables', function () {
 
     //arrange
@@ -61,7 +61,10 @@ describe('test default response when defined in the environment variables', func
     const response = sinon.stubInterface<ServerResponse>();
     response.writeHead.returns(response);
 
-    const webhook = new Webhook(environmentVariables, publisher);
+    const firewall: IFirewall = sinon.stubInterface<IFirewall>();
+    firewall.isRequestAllowed = () => { return true; };
+
+    const webhook = new Webhook(environmentVariables, firewall, publisher);
 
     //act
     webhook.requestHandler(request, response);
@@ -77,6 +80,48 @@ describe('test default response when defined in the environment variables', func
     it('response body', function () {
         assert.equal(response.end.callCount, 1);
         assert.equal(response.end.getCall(0).firstArg, defaultResponse);
+    });
+
+});
+
+describe('request blocked by firewall', function () {
+
+    //arrange
+    const defaultResponse = "[default response]";
+
+    const environmentVariables = {
+        "test": "123",
+        "DEFAULT_RESPONSE": defaultResponse,
+    };
+
+    const request = sinon.stubInterface<IncomingMessage>();
+    request.headers = {
+        "content-type": "application/json"
+    };
+    const response = sinon.stubInterface<ServerResponse>();
+    response.writeHead.returns(response);
+
+    const firewall: IFirewall = sinon.stubInterface<IFirewall>();
+    firewall.isRequestAllowed = () => { return false; };
+
+    const webhook = new Webhook(environmentVariables, firewall, publisher);
+
+    //act
+    webhook.requestHandler(request, response);
+
+    //assert
+    it('statusCode', function () {
+        assert.equal(response.writeHead.callCount, 1);
+        assert.equal(response.writeHead.getCall(0).firstArg, 404);
+    });
+
+    it('response body', function () {
+        assert.equal(response.end.callCount, 1);
+        assert.equal(response.end.getCall(0).firstArg, 'not found');
+    });
+
+    it('no listeners on request', function () {
+        assert.equal(request.on.callCount, 0);
     });
 
 });

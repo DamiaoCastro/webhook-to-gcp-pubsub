@@ -1,6 +1,7 @@
 import { IncomingMessage, RequestListener, ServerResponse } from 'node:http';
+import { IFirewall } from './types/IFirewall';
 
-export class Firewall {
+export class Firewall implements IFirewall {
 
     private ipWhitelist: string[] = [];
 
@@ -22,9 +23,9 @@ export class Firewall {
 
     }
 
-    public requestHandler: RequestListener = (request: IncomingMessage, response: ServerResponse) => {
+    isRequestAllowed(request: IncomingMessage): boolean {
 
-        if (this.ipWhitelist.length == 0) { return; }
+        if (this.ipWhitelist.length == 0) { return true; }
 
         const requestorIp = this.getRequestorIp(request);
 
@@ -32,9 +33,10 @@ export class Firewall {
 
             console.warn(`requestorIp request was blocked: ${requestorIp}`);
 
-            response.writeHead(404, { 'Content-Type': 'text/plain' }).end('not found');
+            return false;
         }
 
+        return true;
     }
 
     private getRequestorIp(request: IncomingMessage): string {
@@ -49,15 +51,13 @@ export class Firewall {
             throw new Error('Unexpected value for request.headers["x-forwarded-for"]');
         }
 
-        console.info(`request.socket.remoteAddress: ${request.socket.remoteAddress}`);
         //example  ::ffff:169.254.8.129
-        const remoteAddress = request.socket.remoteAddress?.replace(RegExp('$::ffff:'), '');
-
+        const remoteAddress = request.socket.remoteAddress?.replace(RegExp('^::ffff:'), '');
         if (remoteAddress && remoteAddress.length > 0) {
             return remoteAddress;
         }
 
-        throw new Error('request ip not determined');
+        throw new Error('requestor ip not determined');
     }
 
 }

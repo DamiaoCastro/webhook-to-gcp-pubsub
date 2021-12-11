@@ -18,7 +18,8 @@
             "env": {
                 "GOOGLE_APPLICATION_CREDENTIALS":"credentials.json",
                 "PROJECT_ID":"damiao-project-1",
-                "TOPIC_ID":"test"
+                "TOPIC_ID":"test",
+                "IP_WHITELIST":"*"
             }
         }
     ]

@@ -11,10 +11,10 @@ async function startHttp1Server() {
   await publisher.checkPublishPermissionsAsync();
 
   const firewall = new Firewall(process.env);
-  const webhook = new Webhook(process.env, publisher);
+  const webhook = new Webhook(process.env, firewall, publisher);
 
   const server: Server = http.createServer();
-  server.on('request', firewall.requestHandler);
+  server.on('request', webhook.requestHandler);
   server.on('clientError', webhook.errorHandler);
 
   const port = process.env.PORT || 8080;
