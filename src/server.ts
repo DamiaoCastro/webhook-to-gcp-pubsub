@@ -10,7 +10,7 @@ async function startHttp1Server() {
   const publisher = PubSubPublisher.new(process.env);
   await publisher.checkPublishPermissionsAsync();
 
-  const firewall = new Firewall(process.env);
+  const firewall = await Firewall.getFirewallAsync(process.env);
   const webhook = new Webhook(process.env, firewall, publisher);
 
   const server: Server = http.createServer();

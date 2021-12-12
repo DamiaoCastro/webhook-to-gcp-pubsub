@@ -29,16 +29,18 @@ export class PubSubPublisher implements IPubsubPublisher {
 
     public publishMessageAsync = async (contentType: string, data: Buffer): Promise<void> => {
 
-        const attributes = {
-            "content-type": contentType
-        };
+        if (data.length > 0) {
 
-        // const data: Buffer = Buffer.from(message);
-        const messageId = await this.pubSubClient
-            .topic(this.topicName)
-            .publishMessage({ attributes, data });
+            const attributes = {
+                "content-type": contentType
+            };
 
-        console.log(`Message ${messageId} published.`);
+            const messageId = await this.pubSubClient
+                .topic(this.topicName)
+                .publishMessage({ attributes, data });
+
+            console.log(`Message ${messageId} published.`);
+        }
 
     }
 

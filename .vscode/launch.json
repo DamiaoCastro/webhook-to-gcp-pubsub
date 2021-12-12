@@ -11,6 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
+            "preLaunchTask": "npm: build",
             "program": "${workspaceFolder}\\dist\\src\\server.js",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
@@ -19,7 +20,9 @@
                 "GOOGLE_APPLICATION_CREDENTIALS":"credentials.json",
                 "PROJECT_ID":"damiao-project-1",
                 "TOPIC_ID":"test",
-                "IP_WHITELIST":"*"
+                "IP_WHITELIST":"*",
+                "DNS_WHITELIST":"out.adyen.com",
+                "DNS_WHITELIST_REFRESH_MINUTES" : "60"
             }
         }
     ]
