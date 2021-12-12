@@ -17,7 +17,7 @@ A small functionality of IP or DNS whitelisting is implemented. Please check `IP
 |DEFAULT_RESPONSE|No|"OK"|string reponse that will be sent as response body on success(200) call of the webhook|
 |PROJECT_ID|Yes||ProjectId of the Google Cloud project that the destination Pubsub is in|
 |TOPIC_ID|Yes||TopicId of the destination pubsub topic. Internally, with the PROJECT_ID and TOPIC_ID, the topic name will be composed|
-|IP_WHITELIST|No||IP's to whitelist. If `IP_WHITELIST` nor `DNS_WHITELIST` are specified, all IP's will be accepted. Example: `169.254.8.128` or `169.254.8.129;169.254.8.129`|
+|IP_WHITELIST|No||IP's to whitelist. If `IP_WHITELIST` nor `DNS_WHITELIST` are specified, all IP's will be accepted. Example: `169.254.8.128` or `169.254.8.129;168.254.8.129`|
 |DNS_WHITELIST|No||DNS URL to whitelist. If `IP_WHITELIST` nor `DNS_WHITELIST` are specified, all IP's will be accepted. Example: `dns.google.com`. The option of multiple DNS URL's is not implemented.|
 |DNS_WHITELIST_REFRESH_MINUTES|No||Number value with the number of minutes that the dns URL defined in `DNS_WHITELIST` should be checked for IP's to whitelist. Minimum is 1, recomended is 60.|
  
