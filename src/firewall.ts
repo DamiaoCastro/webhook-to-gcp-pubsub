@@ -5,6 +5,10 @@ const dns = require('dns');
 
 export class Firewall implements IFirewall {
 
+    private static readonly IpWhitelistEnvironmentKey: string = 'IP_WHITELIST';
+    private static readonly DnsWhitelistEnvironmentKey: string = 'DNS_WHITELIST';
+    private static readonly DnsWhitelistRefreshMinutesEnvironmentKey: string = 'DNS_WHITELIST_REFRESH_MINUTES';
+
     private ipWhitelist: string[];
     private firewallEnvironmentVariables: FirewallEnvironmentVariables;
 
@@ -78,9 +82,9 @@ export class Firewall implements IFirewall {
 
     private static getFirewallEnvironmentVariables(environmentVariables: Dict<string>): FirewallEnvironmentVariables {
 
-        const ipWhitelist = environmentVariables["IP_WHITELIST"]?.trim() ?? null;
-        const dnsWhitelist = environmentVariables["DNS_WHITELIST"]?.trim() ?? null;
-        const dnsWhitelistRefreshMinutesString = environmentVariables["DNS_WHITELIST_REFRESH_MINUTES"]?.trim() ?? null;
+        const ipWhitelist = environmentVariables[Firewall.IpWhitelistEnvironmentKey]?.trim() ?? null;
+        const dnsWhitelist = environmentVariables[Firewall.DnsWhitelistEnvironmentKey]?.trim() ?? null;
+        const dnsWhitelistRefreshMinutesString = environmentVariables[Firewall.DnsWhitelistRefreshMinutesEnvironmentKey]?.trim() ?? null;
 
         let dnsWhitelistRefreshMinutes: number | null = dnsWhitelist ? 60 : null;
         if (dnsWhitelistRefreshMinutesString && dnsWhitelistRefreshMinutesString.length > 0) {

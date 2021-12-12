@@ -4,6 +4,8 @@ import { IFirewall } from './types/IFirewall';
 
 export class Webhook {
 
+    private static readonly DefaultResponseEnvironmentKey: string = 'DEFAULT_RESPONSE';
+
     private defaultResponse: string = "OK";
     private readonly firewall: IFirewall;
     private readonly publisher: IPubsubPublisher;
@@ -16,12 +18,12 @@ export class Webhook {
 
     /**
      * Extracts from the passed environment variables the values that matter for this class.
-     * At the moment: DEFAULT_RESPONSE
+     * At the moment only DEFAULT_RESPONSE
      * @param environmentVariables 
      */
     private analyseEnvironmentVariables(environmentVariables: Dict<string>) {
 
-        const defaultResponse = environmentVariables["DEFAULT_RESPONSE"];
+        const defaultResponse = environmentVariables[Webhook.DefaultResponseEnvironmentKey];
         if (defaultResponse && defaultResponse.length > 0) { this.defaultResponse = defaultResponse; }
 
     }

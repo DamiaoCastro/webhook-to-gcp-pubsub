@@ -20,8 +20,8 @@
                 "GOOGLE_APPLICATION_CREDENTIALS":"credentials.json",
                 "PROJECT_ID":"damiao-project-1",
                 "TOPIC_ID":"test",
-                "IP_WHITELIST":"*",
-                "DNS_WHITELIST":"out.adyen.com",
+                "IP_WHITELIST":"",
+                "DNS_WHITELIST":"",
                 "DNS_WHITELIST_REFRESH_MINUTES" : "60"
             }
         }

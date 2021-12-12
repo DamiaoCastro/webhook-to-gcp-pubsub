@@ -15,6 +15,6 @@ WORKDIR /usr/app
 
 COPY --from=build /usr/app/dist/src/ /usr/app/
 RUN npm install @google-cloud/pubsub
-RUN npm install grpc
+RUN npm install @grpc/grpc-js
 
 ENTRYPOINT node /usr/app/server.js

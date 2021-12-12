@@ -19,7 +19,7 @@
   "homepage": "https://github.com/DamiaoCastro/ts-webhook-to-pubsub#readme",
   "dependencies": {
     "@google-cloud/pubsub": "^2.18.4",
-    "grpc": "^1.24.11"
+    "@grpc/grpc-js": "^1.4.4"
   },
   "devDependencies": {
     "@types/mocha": "^9.0.0",

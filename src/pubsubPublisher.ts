@@ -1,5 +1,5 @@
-import { PubSub, TestIamPermissionsResponse } from "@google-cloud/pubsub";
-const grpc = require('grpc');
+import { PubSub, TestIamPermissionsResponse, Topic } from "@google-cloud/pubsub";
+const grpc = require('@grpc/grpc-js');
 
 export class PubSubPublisher implements IPubsubPublisher {
 
@@ -7,13 +7,14 @@ export class PubSubPublisher implements IPubsubPublisher {
     private static readonly TopicIdEnvironmentKey: string = 'TOPIC_ID';
 
     private readonly pubSubClient = new PubSub({ grpc });
-    private readonly topicName: string;
+    private readonly topic: Topic;
 
     /**
      *
      */
     constructor(projectId: string, topicId: string) {
-        this.topicName = `projects/${projectId}/topics/${topicId}`;
+        const topicName = `projects/${projectId}/topics/${topicId}`;
+        this.topic = this.pubSubClient.topic(topicName);
     }
 
     public static new = (environmentVariables: Dict<string>): PubSubPublisher => {
@@ -35,11 +36,11 @@ export class PubSubPublisher implements IPubsubPublisher {
                 "content-type": contentType
             };
 
-            const messageId = await this.pubSubClient
-                .topic(this.topicName)
-                .publishMessage({ attributes, data });
+            const messageId = await this.topic.publishMessage({ attributes, data });
 
             console.log(`Message ${messageId} published.`);
+        } else {
+            console.warn('Empty buffer, no message published');
         }
 
     }
@@ -52,14 +53,12 @@ export class PubSubPublisher implements IPubsubPublisher {
             // 'pubsub.topics.update',
         ];
 
-        const permissionsReponse: TestIamPermissionsResponse = await this.pubSubClient
-            .topic(this.topicName)
-            .iam.testPermissions(permissionsToTest);
+        const permissionsReponse: TestIamPermissionsResponse = await this.topic.iam.testPermissions(permissionsToTest);
 
         if (permissionsReponse[0]) {
             console.info('publish permissions verified');
         } else {
-            throw new Error('service account has no publish permissions');
+            throw new Error(`service account has no publish permissions to the topic: ${this.topic.name}`);
         }
     }
 
